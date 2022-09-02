@@ -1,5 +1,5 @@
 name: roundabnt
-description: Round number with brazilian abnt rule
+description: This package allow user to round a number with brazilian abnt rule
 version: 0.0.1+1
 homepage: https://github.com/sergiotucano/roundabnt
 
