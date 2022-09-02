@@ -3,7 +3,7 @@
 A Dart package to round numbers in brazilian abnt rule
 
 [![Project Owner](https://img.shields.io/badge/owner-sergiotucano-dd8800)](https://github.com/sergiotucano/)
-![GitHub stars](https://img.shields.io/github/stars/sergiotucano/roundabnt?style=social)
+[![GitHub stars](https://img.shields.io/github/stars/sergiotucano/roundabnt?style=social)]
 [![GitHub forks](https://img.shields.io/github/forks/sergiotucano/roundabnt?style=social)](https://github.com/sergiotucano/roundabnt/fork)
 
 ## Installation
@@ -15,10 +15,10 @@ flutter pub add roundabnt
 ## Import
 
 ```dart
-import 'package:roundabnt/roundAbnt.dart';
+import 'package:roundabnt/round_abnt.dart';
 ```
 
-### Exemple
+### Example
 
 ```dart
 void main() {
