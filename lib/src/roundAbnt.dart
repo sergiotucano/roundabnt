@@ -1,5 +1,4 @@
-
-import 'package:roundabnt/roundabnt.dart';
+import 'package:roundabnt/roundAbnt.dart';
 
 class RoundAbnt implements RoundAbntImplementation {
 
@@ -24,8 +23,6 @@ class RoundAbnt implements RoundAbntImplementation {
 
   double roundAbnt(String aValue, int digits) {
 
-    bool negative;
-    double value = double.parse(aValue);
     String newValue = '';
     String intPart = '0';
     String fractPart = '0';
@@ -36,12 +33,28 @@ class RoundAbnt implements RoundAbntImplementation {
     int restValue = 0;
     double resultValue = 0.00;
 
-    negative = value < 0;
-
     newValue = '';
-    intPart = aValue.substring(0, aValue.indexOf('.'));
-    fractPart = aValue.substring(aValue.indexOf('.')+1);
 
+    //Verify the int part. if not have dot return int part with zero in fract part
+    try {
+      intPart = aValue.substring(0, aValue.indexOf('.'));
+    } catch(_){
+      intPart = aValue;
+      truncDigit = '0';
+      truncDigit = truncDigit + '0' * (digits - truncDigit.toString().length);
+      newValue = '$intPart.$truncDigit';
+      resultValue = double.parse(newValue);
+      return resultValue;
+    }
+
+    //verify fract part
+    try {
+      fractPart = aValue.substring(aValue.indexOf('.') + 1);
+    } catch (_){
+      fractPart = '0';
+    }
+
+    //calc the digits will be truncade
     try {
       truncDigit = fractPart.substring(0, digits);
     } catch(_){
@@ -49,6 +62,7 @@ class RoundAbnt implements RoundAbntImplementation {
       truncDigit = truncDigit + '0' * (digits - truncDigit.toString().length);
     }
 
+    //calc the rest digit after de trunc digits
     try {
       restDigit = fractPart.substring(digits, digits + 1);
     } catch(_){
@@ -61,6 +75,7 @@ class RoundAbnt implements RoundAbntImplementation {
       restAllDigits = '0';
     }
 
+    // calc de digit will be mantained
     try {
       mantainDigit = fractPart.substring(1, digits);
     }catch(_){
@@ -70,10 +85,11 @@ class RoundAbnt implements RoundAbntImplementation {
     restValue = int.parse(restDigit);
     resultValue = 0.00;
 
+    // if rest digit < 5 the trunc digit will be maintained
     if (restValue < 5){
       newValue = '$intPart.$truncDigit';
       resultValue = double.parse(newValue);
-    } else if (restValue > 5){
+    } else if (restValue > 5){             // if rest digit > 5 the trunc digit sum 1
       int addDigit = int.parse(truncDigit) + 1;
 
       if (addDigit == 0){
@@ -83,6 +99,14 @@ class RoundAbnt implements RoundAbntImplementation {
       newValue = '$intPart.$addDigit';
       resultValue = double.parse(newValue);
     } else if (restValue == 5){
+
+      /*
+      * in this case if rest digit == 5
+      * if is odd sum 1
+      * if is pair and don't have any 0 sum 1
+      * if is pair and have any 0 maintain the number
+       */
+
       int matainValue = int.parse(mantainDigit);
       if ((matainValue % 2) != 0) {
         int addDigit = int.parse(truncDigit) + 1;
@@ -111,9 +135,6 @@ class RoundAbnt implements RoundAbntImplementation {
       }
     }
 
-    if (negative){
-      return -1.0 * resultValue;
-    }
     return resultValue;
   }
 

@@ -15,7 +15,7 @@ flutter pub add roundabnt
 ## Import
 
 ```dart
-import 'package:roundabnt/roundabnt.dart';
+import 'package:roundabnt/roundAbnt.dart';
 ```
 
 ### Exemple
