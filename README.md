@@ -12,7 +12,7 @@ A Dart package to round numbers in brazilian abnt rule
 flutter pub add roundabnt
 ```
 
-## Installation
+## Import
 
 ```dart
 import 'package:roundabnt/roundabnt.dart';
