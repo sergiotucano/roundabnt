@@ -1,6 +1,6 @@
 name: roundabnt
 description: This package allow user to round a number with brazilian abnt rule
-version: 0.0.1+1
+version: 0.0.1+2
 homepage: https://github.com/sergiotucano/roundabnt
 
 environment:
