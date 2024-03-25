@@ -1,3 +1,6 @@
+## 0.0.4+0
+* Fix round calc
+
 ## 0.0.3+1
 * Return the same number if exception occurs
 
