@@ -97,12 +97,6 @@ class RoundAbnt implements RoundAbntImplementation {
         restDigit = '0';
       }
 
-      try {
-        restAllDigits = fractPart.substring(digits);
-      } catch (_) {
-        restAllDigits = '0';
-      }
-
       /// calc de digit will be mantained
       try {
         mantainDigit = fractPart.substring(1, digits);
