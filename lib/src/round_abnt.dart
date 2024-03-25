@@ -53,7 +53,7 @@ class RoundAbnt implements RoundAbntImplementation {
         fractPart = '0';
       }
 
-      if (fractPart.length > 3 && digits < 3){
+      if (fractPart.length > 4 && digits < 3){
         double tempNumber = roundAbnt(aValue, 3);
 
         try {
@@ -113,13 +113,16 @@ class RoundAbnt implements RoundAbntImplementation {
         resultValue = double.parse(newValue);
       } else if (restValue > 5) {
         /// if rest digit > 5 the trunc digit sum 1
+
         int addDigit =  int.parse(truncDigit) + 1;
 
         if (addDigit == 0) {
           intPart = '${int.parse(intPart) + 1}';
         }
 
-        String zeroTemp = addDigit < 10? '0':'';
+        String zeroTemp =  digits == 2
+            ? addDigit  < 10? '0':''
+            : addDigit  < 100? '0':'';
 
         newValue = '$intPart.$zeroTemp$addDigit';
         resultValue = double.parse(newValue);
@@ -139,18 +142,24 @@ class RoundAbnt implements RoundAbntImplementation {
             intPart = '${int.parse(intPart) + 1}';
           }
 
-          String zeroTemp = addDigit < 10? '0':'';
+          String zeroTemp =  digits == 2
+              ? addDigit  < 10? '0':''
+              : addDigit  < 100? '0':'';
+
           newValue = '$intPart.$zeroTemp$addDigit';
 
           resultValue = double.parse(newValue);
         } else {
 
-        int addDigit = int.parse(truncDigit);
+          int addDigit = int.parse(truncDigit);
 
-        String zeroTemp = addDigit < 10? '0':'';
-        newValue = '$intPart.$zeroTemp$addDigit';
+          String zeroTemp =  digits == 2
+              ? addDigit  < 10? '0':''
+              : addDigit  < 100? '0':'';
 
-        resultValue = double.parse(newValue);
+          newValue = '$intPart.$zeroTemp$addDigit';
+
+          resultValue = double.parse(newValue);
 
         }
       }
