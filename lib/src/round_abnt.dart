@@ -1,4 +1,4 @@
-import 'package:roundabnt/round_abnt.dart';
+import 'package:roundabnt/roundabnt.dart';
 
 /// Regra ABNT :
 ///  Se o proximo número do último algarismo a ser conservado for menor que 5 :
@@ -53,7 +53,7 @@ class RoundAbnt implements RoundAbntImplementation {
         fractPart = '0';
       }
 
-      if ('$fractPart'.length > 3 && digits < 3){
+      if (fractPart.length > 3 && digits < 3){
         double tempNumber = roundAbnt(aValue, 3);
 
         try {

@@ -1,4 +1,4 @@
-import 'package:roundabnt/round_abnt.dart';
+import 'package:roundabnt/roundabnt.dart';
 
 /// example how to use the roundabnt package
 void main() {
