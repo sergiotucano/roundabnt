@@ -1,4 +1,6 @@
 import 'package:roundabnt/roundabnt.dart';
+import 'dart:math' as math;
+
 
 /// Regra ABNT :
 ///  Se o proximo número do último algarismo a ser conservado for menor que 5 :
@@ -17,157 +19,57 @@ import 'package:roundabnt/roundabnt.dart';
 ///  https://www.sofazquemsabe.com/2011/01/como-fazer-arredondamento-da-numeracao.html
 
 class RoundAbnt implements RoundAbntImplementation {
+
   //calc rounded number with brazilian abnt rule
   @override
-  double roundAbnt(String aValue, int digits) {
-    String newValue = '';
-    String intPart = '0';
-    String fractPart = '0';
-    String truncDigit = '0';
-    String restDigit = '0';
-    String mantainDigit = '0';
-    int restValue = 0;
-    double resultValue = 0.00;
-
-    newValue = '';
+  double roundAbnt(double aValue, int digits, {double delta = 0.00001}) {
 
     try {
-      ///Verify int part. if haven't dot return int part with zero in fract
-      try {
-        intPart = aValue.substring(0, aValue.indexOf('.'));
-      } catch (_) {
-        intPart = aValue;
-        truncDigit = '0';
-        truncDigit = truncDigit + '0' * (digits - truncDigit
-            .toString()
-            .length);
-        newValue = '$intPart.$truncDigit';
-        resultValue = double.parse(newValue);
-        return resultValue;
-      }
+      // Check if the value is negative
+      var negativo = (aValue < 0);
 
-      ///verify fract part
-      try {
-        fractPart = aValue.substring(aValue.indexOf('.') + 1);
-      } catch (_) {
-        fractPart = '0';
-      }
+      // Calculate the power of 10
+      var pow = math.pow(10, digits.abs());
+      var powValue = aValue.abs() / 10;
+      var intValue = powValue.truncate();
+      var fracValue = powValue - intValue;
 
-      if (fractPart.length > 4 && digits < 3){
-        double tempNumber = roundAbnt(aValue, 3);
+      powValue = _simpleRoundToEX(fracValue * 10 * pow, -9);
+      var intCalc = powValue.truncate();
+      var fracCalc = (fracValue * 100).truncate();
 
-        try {
-          intPart = '$tempNumber'.substring(0, '$tempNumber'.indexOf('.'));
-        } catch (_) {
-          intPart = '$tempNumber';
-          truncDigit = '0';
-          truncDigit = truncDigit + '0' * (digits - truncDigit
-              .toString()
-              .length);
-          newValue = '$intPart.$truncDigit';
-          resultValue = double.parse(newValue);
-          return resultValue;
-        }
+      // Apply ABNT rounding rules
+      if (fracCalc > 50) {
+        intCalc++;
+      } else if (fracCalc == 50) {
+        var lastNumber = (intCalc / 10).truncate() % 10;
 
-        ///verify fract part
-        String fractTemp = '';
-        try {
-          fractTemp = '$tempNumber'.substring('$tempNumber'.indexOf('.') + 1);
-        } catch (_) {
-          fractTemp = '0';
-        }
-
-        fractPart = fractTemp;
-      }
-
-      ///calc the digits will be truncade
-      try {
-        truncDigit = fractPart.substring(0, digits);
-      } catch (_) {
-        truncDigit = fractPart.substring(0);
-        truncDigit = truncDigit + '0' * (digits - truncDigit
-            .toString()
-            .length);
-      }
-
-      ///calc the rest digit after de trunc digits
-      try {
-        restDigit = fractPart.substring(digits, digits + 1);
-      } catch (_) {
-        restDigit = '0';
-      }
-
-      /// calc de digit will be mantained
-      try {
-        mantainDigit = fractPart.substring(1, digits);
-      } catch (_) {
-        mantainDigit = fractPart.substring(0);
-      }
-
-      restValue = int.parse(restDigit);
-      resultValue = 0.00;
-
-      /// if rest digit < 5 the trunc digit will be maintained
-      if (restValue < 5) {
-        newValue = '$intPart.$truncDigit';
-        resultValue = double.parse(newValue);
-      } else if (restValue > 5) {
-        /// if rest digit > 5 the trunc digit sum 1
-
-        int addDigit =  int.parse(truncDigit) + 1;
-
-        if (addDigit == 0) {
-          intPart = '${int.parse(intPart) + 1}';
-        }
-
-        String zeroTemp =  digits == 2
-            ? addDigit  < 10? '0':''
-            : addDigit  < 100? '0':'';
-
-        newValue = '$intPart.$zeroTemp$addDigit';
-        resultValue = double.parse(newValue);
-      } else if (restValue == 5) {
-        /**
-         * in this case if rest digit == 5
-         * if is odd sum 1
-         * if is pair and don't have any 0 sum 1
-         * if is pair and have any 0 maintain the number
-         */
-
-        int matainValue = int.parse(mantainDigit);
-        if ((matainValue % 2) != 0) {
-          int addDigit = int.parse(truncDigit) + 1;
-
-          if (addDigit == 0) {
-            intPart = '${int.parse(intPart) + 1}';
-          }
-
-          String zeroTemp =  digits == 2
-              ? addDigit  < 10? '0':''
-              : addDigit  < 100? '0':'';
-
-          newValue = '$intPart.$zeroTemp$addDigit';
-
-          resultValue = double.parse(newValue);
+        if (lastNumber.isOdd) {
+          intCalc++;
         } else {
+          var restPart = (powValue * 10) % 10;
 
-          int addDigit = int.parse(truncDigit);
-
-          String zeroTemp =  digits == 2
-              ? addDigit  < 10? '0':''
-              : addDigit  < 100? '0':'';
-
-          newValue = '$intPart.$zeroTemp$addDigit';
-
-          resultValue = double.parse(newValue);
-
+          if (restPart > delta) intCalc++;
         }
       }
 
-      return resultValue;
-    }catch(_){
-      final resul = double.parse(aValue);
-      return resul;
+      // Calculate the final rounded value
+      var result = (intValue * 10 + intCalc / pow);
+
+      // Apply sign to the result if the original value was negative
+      if (negativo) result = -result;
+
+      return result;
+    } catch (_) {
+      // Return the original number in case of error
+      return aValue;
     }
+
+  }
+
+  // Function to perform simple rounding with given precision
+  double _simpleRoundToEX(double value, int digits) {
+    var shift = math.pow(10, digits.toDouble()).toInt();
+    return (value * shift).roundToDouble() / shift;
   }
 }

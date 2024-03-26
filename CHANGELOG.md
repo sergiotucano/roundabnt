@@ -1,3 +1,7 @@
+## 1.0.0+0
+* Refactoring all round code
+* BREAK CHANGE, now the value parameter is a double 
+
 ## 0.0.4+1
 * Fix round calc with 3 decimals
 

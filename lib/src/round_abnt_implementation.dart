@@ -6,5 +6,5 @@ import 'package:flutter/foundation.dart';
 @immutable
 abstract class RoundAbntImplementation {
   /// call the roundAbnt method
-  double roundAbnt(String aValue, int digits);
+  double roundAbnt(double aValue, int digits, {double delta = 0.00001});
 }
