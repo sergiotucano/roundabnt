@@ -23,38 +23,26 @@ class RoundAbnt implements RoundAbntImplementation {
   //calc rounded number with brazilian abnt rule
   @override
   double roundAbnt(double aValue, int digits, {double delta = 0.00001}) {
-
     try {
       // Check if the value is negative
       var negativo = (aValue < 0);
 
       // Calculate the power of 10
       var pow = math.pow(10, digits.abs());
-      var powValue = aValue.abs() / 10;
-      var intValue = powValue.truncate();
-      var fracValue = powValue - intValue;
+      var intValue = aValue.toInt();
+      var fracValue = (aValue - intValue).abs();
 
-      powValue = _simpleRoundToEX(fracValue * 10 * pow, -9);
-      var intCalc = powValue.truncate();
-      var fracCalc = (fracValue * 100).truncate();
+      var powValue = _simpleRoundToEX(fracValue * pow, 12); // Increase precision
+      var intCalc = powValue.toInt();
+      var fracCalc = ((powValue * 100).toInt()) % 100; // Remove +1
 
       // Apply ABNT rounding rules
-      if (fracCalc > 50) {
+      if (fracCalc > 50 || (fracCalc == 50 && intCalc % 2 == 1)) {
         intCalc++;
-      } else if (fracCalc == 50) {
-        var lastNumber = (intCalc / 10).truncate() % 10;
-
-        if (lastNumber.isOdd) {
-          intCalc++;
-        } else {
-          var restPart = (powValue * 10) % 10;
-
-          if (restPart > delta) intCalc++;
-        }
       }
 
       // Calculate the final rounded value
-      var result = (intValue * 10 + intCalc / pow);
+      var result = (intValue * pow + intCalc) / pow;
 
       // Apply sign to the result if the original value was negative
       if (negativo) result = -result;
@@ -64,12 +52,12 @@ class RoundAbnt implements RoundAbntImplementation {
       // Return the original number in case of error
       return aValue;
     }
-
   }
 
-  // Function to perform simple rounding with given precision
+// Function to perform simple rounding with given precision
   double _simpleRoundToEX(double value, int digits) {
-    var shift = math.pow(10, digits.toDouble()).toInt();
+    var shift = math.pow(10, digits.toDouble());
     return (value * shift).roundToDouble() / shift;
   }
+
 }
