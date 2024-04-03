@@ -1,3 +1,6 @@
+## 1.0.1+0
+* Fix abnt rule
+
 ## 1.0.0+0
 * Refactoring all round code
 * BREAK CHANGE, now the value parameter is a double 
