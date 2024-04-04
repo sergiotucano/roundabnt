@@ -1,7 +1,6 @@
 import 'package:roundabnt/roundabnt.dart';
 import 'dart:math' as math;
 
-
 /// Regra ABNT :
 ///  Se o proximo número do último algarismo a ser conservado for menor que 5 :
 ///  manter-se-a o último algarismo a ser conservado.
@@ -19,7 +18,6 @@ import 'dart:math' as math;
 ///  https://www.sofazquemsabe.com/2011/01/como-fazer-arredondamento-da-numeracao.html
 
 class RoundAbnt implements RoundAbntImplementation {
-
   //calc rounded number with brazilian abnt rule
   @override
   double roundAbnt(double aValue, int digits, {double delta = 0.00001}) {
@@ -27,12 +25,17 @@ class RoundAbnt implements RoundAbntImplementation {
       // Check if the value is negative
       var negativo = (aValue < 0);
 
+      //@andrellopes fix calc using delta value
+      aValue = aValue.abs() + 0.00000000000001;
+
       // Calculate the power of 10
       var pow = math.pow(10, digits.abs());
       var intValue = aValue.toInt();
       var fracValue = (aValue - intValue).abs();
 
-      var powValue = _simpleRoundToEX(fracValue * pow, 12); // Increase precision
+      var powValue =
+          _simpleRoundToEX(fracValue * pow, 12); // Increase precision
+
       var intCalc = powValue.toInt();
       var fracCalc = ((powValue * 100).toInt()) % 100; // Remove +1
 
@@ -40,6 +43,19 @@ class RoundAbnt implements RoundAbntImplementation {
       if (fracCalc > 50 || (fracCalc == 50 && intCalc % 2 == 1)) {
         intCalc++;
       }
+
+      // if (fracCalc > 50) {
+      //   intCalc++;
+      // } else if (fracCalc == 50) {
+      //   if (intCalc % 2 == 1) {
+      //     intCalc++;
+      //   } else {
+      //     double restPart = (powValue * 10) % 10;
+      //     if (restPart > delta) {
+      //       intCalc++;
+      //     }
+      //   }
+      // }
 
       // Calculate the final rounded value
       var result = (intValue * pow + intCalc) / pow;
@@ -59,5 +75,4 @@ class RoundAbnt implements RoundAbntImplementation {
     var shift = math.pow(10, digits.toDouble());
     return (value * shift).roundToDouble() / shift;
   }
-
 }

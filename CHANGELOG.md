@@ -1,3 +1,6 @@
+## 1.0.2+0
+* Fix code using delta value by @andrellopes
+
 ## 1.0.1+0
 * Fix abnt rule
 
@@ -21,4 +24,4 @@
 * First version of package
 
 ## 0.0.1+1
-* First version of package
+* First version of package by @sergiotucano
