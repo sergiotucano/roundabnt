@@ -1,3 +1,6 @@
+## 1.0.3+0
+* Increase precision
+
 ## 1.0.2+0
 * Fix code using delta value by @andrellopes
 

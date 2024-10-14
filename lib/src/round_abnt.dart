@@ -37,7 +37,7 @@ class RoundAbnt implements RoundAbntImplementation {
           _simpleRoundToEX(fracValue * pow, 12); // Increase precision
 
       var intCalc = powValue.toInt();
-      var fracCalc = ((powValue * 100).toInt()) % 100; // Remove +1
+      var fracCalc = ((powValue * 1000).toInt()) % 1000; // Remove +1
 
       // Apply ABNT rounding rules
       if (fracCalc > 50 || (fracCalc == 50 && intCalc % 2 == 1)) {
