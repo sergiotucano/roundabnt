@@ -40,7 +40,7 @@ class RoundAbnt implements RoundAbntImplementation {
       var fracCalc = ((powValue * 1000).toInt()) % 1000; // Remove +1
 
       // Apply ABNT rounding rules
-      if (fracCalc > 50 || (fracCalc == 50 && intCalc % 2 == 1)) {
+      if (fracCalc > 500 || (fracCalc == 500 && intCalc % 2 == 1)) {
         intCalc++;
       }
 

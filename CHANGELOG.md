@@ -1,3 +1,6 @@
+## 1.0.3+1
+* Fix bug when increase precision
+ 
 ## 1.0.3+0
 * Increase precision
 
