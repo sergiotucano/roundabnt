@@ -1,3 +1,6 @@
+## 1.0.4+2
+* Fix Delta value
+
 ## 1.0.3+1
 * Fix bug when increase precision
  

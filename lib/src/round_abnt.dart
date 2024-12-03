@@ -26,7 +26,7 @@ class RoundAbnt implements RoundAbntImplementation {
       var negativo = (aValue < 0);
 
       //@andrellopes fix calc using delta value
-      aValue = aValue.abs() + 0.00000000000001;
+      aValue = aValue.abs() + delta;//0.00000000000001;
 
       // Calculate the power of 10
       var pow = math.pow(10, digits.abs());
