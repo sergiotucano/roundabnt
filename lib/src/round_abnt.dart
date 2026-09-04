@@ -1,78 +1,61 @@
-import 'package:roundabnt/roundabnt.dart';
 import 'dart:math' as math;
 
-/// Regra ABNT :
-///  Se o proximo número do último algarismo a ser conservado for menor que 5 :
-///  manter-se-a o último algarismo a ser conservado.
-///
-///  Caso seja superior a 5 :
-///  aumentará 1 no algarismo a ser mantido.
-///
-///  Se o proximo número do último algarismo a ser conservado for igual a 5 :
-///  Caso o algarismo a ser conservado for impar
-///  aumentará 1 no algarismo a ser mantido.
-///  Caso o algarismo a ser conservado for par
-///  se tiver algum algarismo zero depois do algarismo, se mantem o algarismo
-///  caso contrário soma-se 1.
-///
-///  https://www.sofazquemsabe.com/2011/01/como-fazer-arredondamento-da-numeracao.html
+import 'round_abnt_implementation.dart';
 
+/// ABNT rounding implementation (NBR 5891 — symmetric rounding).
+///
+/// Rules:
+/// - If the digit after the last kept digit is **less than 5**: keep unchanged.
+/// - If it is **greater than 5**: increment the last kept digit by 1.
+/// - If it is **exactly 5**:
+///   - If the last kept digit is **odd**: increment by 1.
+///   - If the last kept digit is **even**: keep if followed only by zeros;
+///     otherwise increment by 1.
+///
+/// Reference: https://www.sofazquemsabe.com/2011/01/como-fazer-arredondamento-da-numeracao.html
 class RoundAbnt implements RoundAbntImplementation {
-  //calc rounded number with brazilian abnt rule
+  /// Creates a const instance of [RoundAbnt].
+  const RoundAbnt();
+
   @override
-  double roundAbnt(double aValue, int digits, {double delta = 0.00001}) {
+  double roundAbnt(double value, int digits, {double delta = 0.00001}) {
     try {
-      // Check if the value is negative
-      var negativo = (aValue < 0);
+      final isNegative = (value < 0);
 
-      //@andrellopes fix calc using delta value
-      aValue = aValue.abs() + delta;//0.00000000000001;
+      value = value.abs() + delta;
 
-      // Calculate the power of 10
-      var pow = math.pow(10, digits.abs());
-      var intValue = aValue.toInt();
-      var fracValue = (aValue - intValue).abs();
+      final factor = math.pow(10, digits.abs());
+      final intValue = value.toInt();
+      final fracValue = (value - intValue).abs();
 
-      var powValue =
-          _simpleRoundToEX(fracValue * pow, 12); // Increase precision
+      final powValue =
+          _roundToDecimalPlaces(fracValue * factor, 12);
 
       var intCalc = powValue.toInt();
-      var fracCalc = ((powValue * 1000).toInt()) % 1000; // Remove +1
+      final fracCalc = ((powValue * 1000).toInt()) % 1000;
 
       // Apply ABNT rounding rules
       if (fracCalc > 500 || (fracCalc == 500 && intCalc % 2 == 1)) {
         intCalc++;
       }
 
-      // if (fracCalc > 50) {
-      //   intCalc++;
-      // } else if (fracCalc == 50) {
-      //   if (intCalc % 2 == 1) {
-      //     intCalc++;
-      //   } else {
-      //     double restPart = (powValue * 10) % 10;
-      //     if (restPart > delta) {
-      //       intCalc++;
-      //     }
-      //   }
-      // }
-
       // Calculate the final rounded value
-      var result = (intValue * pow + intCalc) / pow;
+      var result = (intValue * factor + intCalc) / factor;
 
       // Apply sign to the result if the original value was negative
-      if (negativo) result = -result;
+      if (isNegative) result = -result;
 
       return result;
     } catch (_) {
       // Return the original number in case of error
-      return aValue;
+      return value;
     }
   }
 
-// Function to perform simple rounding with given precision
-  double _simpleRoundToEX(double value, int digits) {
-    var shift = math.pow(10, digits.toDouble());
+  /// Rounds [value] to [digits] significant decimal places using standard
+  /// half-up rounding. Used internally to reduce floating-point noise.
+  double _roundToDecimalPlaces(double value, int digits) {
+    final shift = math.pow(10, digits);
     return (value * shift).roundToDouble() / shift;
   }
 }
